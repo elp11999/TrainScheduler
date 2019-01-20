@@ -16,9 +16,24 @@ $(document).ready(function() {
     };
 
     // Initialize Firebase database
-    firebase.initializeApp(config);
+    //firebase.initializeApp(config);
         
     // Create a Firebase database object
-    var database = firebase.database();
+    //var database = firebase.database();    
+
+    // Firebase callback when a record has been added
+    //database.ref().on('child_added', function(snapshot) {
+    //    var data = snapshot.val();
+    //    console.log(data);        
+    //});
+
+    // Callback when the submit button is clicked
+    $(".form-button").click(function(event) {        
+
+        // Don't refresh the page!
+        event.preventDefault();
+
+        console.log("Submit button clicked.");
+    });
 });
     

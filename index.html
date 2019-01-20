@@ -4,14 +4,17 @@
         <meta charset="utf8">
         <title>Amtrak Train Schedule</title>
 
+        <!-- Reponsive configuration -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
         <!-- jQuery -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
       
-        <!-- Bootstrap CDN-->
+        <!-- Bootstrap -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
       
-        <!-- Firebase Reference -->
+        <!-- Firebase -->
         <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
         
         <!-- Custom styling -->
@@ -20,7 +23,92 @@
     </head>
 
     <body>
+        <div class="container">
+            <div class="jumbotron jumbotron-fluid">            
+                <div class="container">
+                    <img class="amtrak-image" src="assets/images/amtrak.png">
+                    <div class="main-header">
+                        <h1>Amtrak</h1>
+                        <p class="lead">Train Schedules & Timetables</p>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="card">
+                <h5 class="card-header">Current Train Schedule</h5>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">Train Name</th>
+                            <th scope="col">Destination</th>
+                            <th scope="col">Frequency (min)</th>
+                            <th scope="col">Next Arrival</th>
+                            <th scope="col">Minutes Away</th>
+                        </tr>
+                    </thead>
+                    <tbody id="train-schedule">
+                        <tr>
+                            <td>Acela Express</td>
+                            <td>Dallas</td>
+                            <td>20</td>
+                            <td>01:00PM</td>
+                            <td>10</td>
+                        </tr>
+                        <tr>
+                            <td>Adirondack</td>
+                            <td>Atlanta</td>
+                            <td>40</td>
+                            <td>03:00PM</td>
+                            <td>20</td>
+                        </tr>
+                        <tr>
+                            <td>Amtrak Cascades</td>
+                            <td>Clear Water</td>
+                            <td>60</td>
+                            <td>05:00PM</td>
+                            <td>30</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    
+            <div class="card">
+                <h5 class="card-header">Add New Train</h5>
+                <form>
+                    <div class="form-group">
+                        <label class="form-label" id="train-name" for="train-name">Train Name</label>
+                        <input type="input" class="form-control" id="train-name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="destination" for="train-destination">Destination</label>
+                        <input type="input" class="form-control" id="train-destination">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="first-time" for="train-first-time">First Train Time</label>
+                        <input type="input" class="form-control" id="train-first-time">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" id="frequency" for="train-frequency">Frequency</label>
+                        <input type="input" class="form-control" id="train-frequency">
+                    </div>
+                    <button type="submit" class="form-button btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+
+        <!--
         <h1>Amtrak Train Schedule</h1>
+        <button id="submit">Submit</button>
+            Train Schedules & Timetables
+            Acela Express
+            Adirondack
+            Amtrak Cascades
+            Auto Train
+            California Zephyr
+            Downeaster
+            Heartland Flyer
+            Maple Leaf
+        -->
     </body>
 
      <!-- Custom JavaScript -->

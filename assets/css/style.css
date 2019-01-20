@@ -6,3 +6,38 @@
     /* background: url(../images/gravel.png); */
     margin: 0; 
 }
+
+.jumbotron {
+    background-color: #7f462c;
+    color: #fff;
+    border-radius: 1%;
+}
+
+.main-header {
+    margin-left: 10px;
+    display: inline-block;
+}
+
+.card-header,
+.form-button {
+    background-color: #337ab7;
+    color: #fff;
+} 
+
+.form-label {
+    font-weight: bold;
+}
+
+.form-group {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.form-button {
+    margin-top: 10px;
+}
+
+.form-button:hover { 
+    background-color: #7f462c
+  }
