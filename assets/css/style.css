@@ -1,0 +1,8 @@
+/*
+ * CSS for Amtrak Train Schedule
+ */
+ body {
+    font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
+    /* background: url(../images/gravel.png); */
+    margin: 0; 
+}
