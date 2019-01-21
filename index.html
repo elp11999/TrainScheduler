@@ -17,6 +17,9 @@
         <!-- Firebase -->
         <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
         
+        <!-- Moment -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.js"></script>
+
         <!-- Custom styling -->
         <link rel="stylesheet" href="assets/css/resets.css">
         <link rel="stylesheet" href="assets/css/style.css">
@@ -34,7 +37,7 @@
                 </div>
             </div>
     
-            <div class="card">
+            <div class="card train-schedule-area">
                 <h5 class="card-header">Current Train Schedule</h5>
                 <table class="table table-striped">
                     <thead>
@@ -47,6 +50,7 @@
                         </tr>
                     </thead>
                     <tbody id="train-schedule">
+                        <!--
                         <tr>
                             <td>Acela Express</td>
                             <td>Dallas</td>
@@ -68,28 +72,29 @@
                             <td>05:00PM</td>
                             <td>30</td>
                         </tr>
+                        -->
                     </tbody>
                 </table>
             </div>
     
-            <div class="card">
+            <div class="card train-config-area">
                 <h5 class="card-header">Add New Train</h5>
                 <form>
                     <div class="form-group">
-                        <label class="form-label" id="train-name" for="train-name">Train Name</label>
-                        <input type="input" class="form-control" id="train-name">
+                        <label class="form-label" for="train-name">Train Name</label>
+                        <input  id="train-name" type="input" class="form-control" id="train-name">
                     </div>
                     <div class="form-group">
-                        <label class="form-label" id="destination" for="train-destination">Destination</label>
-                        <input type="input" class="form-control" id="train-destination">
+                        <label class="form-label" for="train-destination">Destination</label>
+                        <input id="destination" type="input" class="form-control" id="train-destination">
                     </div>
                     <div class="form-group">
-                        <label class="form-label" id="first-time" for="train-first-time">First Train Time</label>
-                        <input type="input" class="form-control" id="train-first-time">
+                        <label class="form-label" for="train-first-time">First Train Time (HH:mm military time)</label>
+                        <input id="arrival-time" type="input" class="form-control" id="train-first-time">
                     </div>
                     <div class="form-group">
-                        <label class="form-label" id="frequency" for="train-frequency">Frequency</label>
-                        <input type="input" class="form-control" id="train-frequency">
+                        <label class="form-label" for="train-frequency">Frequency (min)</label>
+                        <input id="frequency" type="input" class="form-control" id="train-frequency">
                     </div>
                     <button type="submit" class="form-button btn btn-primary">Submit</button>
                 </form>

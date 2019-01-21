@@ -22,7 +22,11 @@
 .form-button {
     background-color: #337ab7;
     color: #fff;
-} 
+}
+
+.train-config-area {
+    margin-top: 20px;
+}
 
 .form-label {
     font-weight: bold;
@@ -36,8 +40,9 @@
 
 .form-button {
     margin-top: 10px;
+    margin-left: 10px;
 }
 
 .form-button:hover { 
     background-color: #7f462c
-  }
+}
