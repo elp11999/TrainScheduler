@@ -38,11 +38,13 @@
     margin-right: 10px;
 }
 
-.form-button {
+.form-button,
+.refresh-button {
     margin-top: 10px;
     margin-left: 10px;
 }
 
-.form-button:hover { 
+.form-button:hover,
+.refresh-button:hover, { 
     background-color: #7f462c
 }

@@ -10,6 +10,8 @@ $(document).ready(function() {
         frequency: 3,
         minutesAway: 0
     }
+
+    var trains = [];
     
     //getMinutesAway(currentSchedule);
     //return;
@@ -35,6 +37,8 @@ $(document).ready(function() {
         var scheduleInfo = snapshot.val();
         console.log("We are here!!!");
         console.log(scheduleInfo);
+
+        trains.push(scheduleInfo);
 
         // Updated train info
         getMinutesAway(scheduleInfo);
@@ -82,18 +86,21 @@ $(document).ready(function() {
         // Convert the frequency to an integer
         var frequency = parseInt(schedule.frequency);
 
-        //
-        var currentTime = moment();
-        var nextArrivalTime = moment(schedule.arrivalTime, "hh:mm");
-        var duration = moment.duration(nextArrivalTime.diff(currentTime));
-        minutesAway = Math.trunc(duration.asMinutes());
-        console.log("minutesAway=" + minutesAway);
-        if (minutesAway < 0) {
-            minutesAway = 1440 - ~minutesAway;
-        }
-        console.log("minutesAway=" + minutesAway);
-        //
         
+        var currentTime = moment();
+        console.log(">>>currentTime=" + currentTime.format("hh:mm a"));
+        var nextArrivalTime = moment(schedule.arrivalTime, "hh:mm a");
+        console.log(">>>nextArrivalTime=" + nextArrivalTime.format("hh:mm a"));
+        var duration = moment.duration(nextArrivalTime.diff(currentTime));
+        var diffMinutes = Math.ceil(duration.asMinutes());
+        console.log(">>>1 diffMinutes=" + diffMinutes);
+        if (diffMinutes < 0)  {      
+            diffMinutes = ~diffMinutes;
+            console.log(">>>2 diffMinutes=" + diffMinutes);
+        }
+        //minutesAway = Math.trunc(duration.asMinutes());
+       
+        /*
         // Get current time
         var currentTime = moment();
         //console.log("currentTime=" + currentTime);
@@ -106,28 +113,40 @@ $(document).ready(function() {
 
         // Get minutes between current time and the next arrival time
         var diffMinutes = currentTime.diff(moment(nextArrivalTime), "minutes");
+        if (diffMinutes < 0)        
+            diffMinutes = ~diffMinutes;
         console.log("diffMinutes=" + diffMinutes + " minutes");
+        */
 
+        console.log(">>>diffMinutes=" + diffMinutes);
+        console.log(">>>frequency=" + frequency);
         // Get how many minutes until next arrival
         if (diffMinutes < 0) {
+            console.log("We are here 1");
             minutesAway = nextArrivalTime.diff(moment(currentTime), "minutes") + 1;
         } else if (diffMinutes == 0) {
+            console.log("We are here 2");
             minutesAway = frequency;
+            nextArrivalTime = nextArrivalTime.add(frequency, 'minutes');  
         } else {
             var modulus = diffMinutes % frequency;
-            //console.log("modulus=" + modulus);
+            console.log("modulus=" + modulus);
             if (modulus === 0) {
+                console.log("We are here 3");
                 minutesAway = frequency;
                 nextArrivalTime = currentTime.add(frequency, 'minutes');
             } else {
                 if (diffMinutes > frequency) {
+                    console.log("We are here 4");
                     var temp = diffMinutes + frequency;
                     var minutesToNewArrival = temp - (temp % frequency);
                     nextArrivalTime = nextArrivalTime.add(minutesToNewArrival, 'minutes');                    
                     minutesAway = frequency - modulus;
-                } else {                
-                    minutesAway = frequency - diffMinutes;
-                    nextArrivalTime = nextArrivalTime.add(frequency, 'minutes');                    
+                } else {
+                    console.log("We are here 5");                
+                    minutesAway = modulus;                                    
+                    //minutesAway = frequency - diffMinutes;
+                    //nextArrivalTime = nextArrivalTime.add(frequency, 'minutes');                    
                 }
             }
         }
@@ -169,6 +188,32 @@ $(document).ready(function() {
         $('#destination').val('')
         $('#arrival-time').val('')
         $('#frequency').val('')
+    });
+
+    // Callback when the refresh button is clicked
+    $(".refresh-button").click(function(event) {
+        var minutesAway = 0;        
+
+        // Don't refresh the page!
+        event.preventDefault();
+
+        console.log("Refresh button clicked.");
+
+        // Refresh all train schedules
+        trains.forEach(function(scheduleInfo) {
+            console.log(scheduleInfo);            
+            getMinutesAway(scheduleInfo);
+        });
+
+        // Udate train schedules        
+        $("#train-schedule").empty();
+        trains.forEach(function(scheduleInfo) {
+            console.log(scheduleInfo);            
+            renderRecentSchedule(scheduleInfo);
+        });
+    
+        // Update the database with a new record
+        //database.ref().push(scheduleInfo);
     });
 });
     
