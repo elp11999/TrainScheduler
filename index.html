@@ -11,8 +11,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
       
         <!-- Bootstrap -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
       
         <!-- Firebase -->
         <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
@@ -53,15 +54,38 @@
                         <tbody id="train-schedule">
                         </tbody>
                     </table>
-                </div>
+                    <form>
+                        <div class="form-group">
                 
-                <button class="add-train-button btn btn-primary">Add Train</button>
-                <button class="refresh-button btn btn-primary">Refresh</button>
+                            <button class="add-train-button btn btn-primary">Add Train</button>
+                            <button class="refresh-button btn btn-primary">Refresh</button>
+
+                            <div class="edit-dropdown dropdown">
+                               <button type="button" class="edit-button btn btn-primary dropdown-toggle" data-toggle="dropdown">Edit</button>
+                               <div class="edit-dropdown-menu dropdown-menu">
+                                 <a class="dropdown-item" href="#">Link 1</a>
+                                 <a class="dropdown-item" href="#">Link 2</a>
+                                 <a class="dropdown-item" href="#">Link 3</a>
+                               </div>
+                             </div>
+                            
+                            <div class="delete-dropdown dropdown">
+                               <button type="button" class="delete-button btn btn-primary dropdown-toggle" data-toggle="dropdown">Delete</button>
+                               <div class="delete-dropdown-menu dropdown-menu">
+                                 <a class="dropdown-item" href="#">Link 1</a>
+                                 <a class="dropdown-item" href="#">Link 2</a>
+                                 <a class="dropdown-item" href="#">Link 3</a>
+                               </div>
+                             </div>
+
+                        </div>
+                    </form>
+                </div>
             </section>
     
             <section class="train-config-area">
                 <div class="card">
-                    <h5 class="card-header">Add New Train</h5>
+                    <h5 class="train-config-header card-header">Add New Train</h5>
                     <form>
                         <div class="form-group">
                             <label class="form-label" for="train-name">Train Name</label>
@@ -79,8 +103,9 @@
                             <label class="form-label" for="train-frequency">Frequency (min)</label>
                             <input id="frequency" type="input" class="form-control" id="train-frequency">
                         </div>
-                        <button class="form-button btn btn-primary">Submit</button>
+                        <button class="submit-button btn btn-primary">Submit</button>
                         <button class="cancel-button btn btn-primary">Cancel</button>
+                        <span class="config-message"></span>
                     </form>
                 </div>
 

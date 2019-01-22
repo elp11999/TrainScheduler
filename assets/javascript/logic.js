@@ -4,17 +4,8 @@
 $(document).ready(function() {
 
     console.log("Amtrak Train Scheduler started...");
-   
-    var currentSchedule = {
-        arrivalTime: "22:00",
-        frequency: 3,
-        minutesAway: 0
-    }
 
     var trains = [];
-    
-    //getMinutesAway(currentSchedule);
-    //return;
 
     // Firebase database configuration<script>
     var config = {
@@ -34,8 +25,9 @@ $(document).ready(function() {
 
     // Firebase callback when a record has been added
     database.ref().on('child_added', function(snapshot) {
+        console.log("Database updated for key=" + snapshot.key);
         var scheduleInfo = snapshot.val();
-        console.log("We are here!!!");
+        scheduleInfo.databaseKey = snapshot.key;
         console.log(scheduleInfo);
 
         trains.push(scheduleInfo);
@@ -46,8 +38,16 @@ $(document).ready(function() {
         // Add train to the markup
         renderRecentSchedule(scheduleInfo);
 
+        // Update drop down lists
+        updateDropDownList($(".edit-dropdown-menu"));
+        updateDropDownList($(".delete-dropdown-menu"));
+
         // Show train schedule area
-        //$(".train-schedule-area").css("display", "block");
+        $(".train-schedule-area").css("display", "block");
+
+        // Show edit and delete buttons
+        $(".edit-dropdown").css("display", "inline-block");
+        $(".delete-dropdown").css("display", "inline-block");
 
     });  
 
@@ -126,7 +126,9 @@ $(document).ready(function() {
                     minutesAway = frequency - modulus;
                 } else {
                     console.log("We are here 5");                
-                    minutesAway = modulus;                   
+                    minutesAway = modulus;                                   
+                    minutesAway = frequency - diffMinutes;
+                    nextArrivalTime = nextArrivalTime.add(frequency, 'minutes');                    
                 }
             }
         }
@@ -136,31 +138,68 @@ $(document).ready(function() {
         console.log("nextArrivalTime=" + schedule.arrivalTime);
     }
 
-    // Callback when the submit button is clicked
-    $(".form-button").click(function(event) {
-        var minutesAway = 0;
+    function updateDropDownList(dropDownList) {
 
+        // Update drop downlist        
+        $(dropDownList).empty();
+        trains.forEach(function(scheduleInfo) {            
+            $(dropDownList).append($("<a class=\"dropdown-item\" href=\"#\">" + scheduleInfo.trainName + "</a>"));
+        });
+
+    };
+
+    // Callback when the submit button is clicked
+    $(".submit-button").click(function(event) {
         // Don't refresh the page!
         event.preventDefault();
 
         console.log("Submit button clicked.");
 
+        // Clear message area
+        $(".config-message").text("");
+
+        // Get values from form
+        var trainName = $('#train-name').val().trim();
+        var destination = $('#destination').val().trim();
+        var arrivalTime = $('#arrival-time').val().trim();
+        var frequency = $('#frequency').val().trim();
+        var minutesAway = 0;
+
+        // Verify all form data is present
+        if (trainName.length == 0) {
+            $(".config-message").text("Error: Please enter a train name.")
+            return;
+        }
+        if (destination.length == 0) {
+            $(".config-message").text("Error: Please enter a destination.")
+            return;
+        }
+        if (arrivalTime.length == 0) {
+            $(".config-message").text("Error: Please first arrival time.")
+            return;
+        }
+        if (frequency.length == 0) {
+            $(".config-message").text("Error: Please enter a frequency.")
+            return;
+        }
+
         // Create initial minutes away
-        minutesAway = createInitialMinutesAway($('#arrival-time').val());
+        minutesAway = createInitialMinutesAway(arrivalTime);
 
         // Build a new database record
         var scheduleInfo = {
-            trainName: $('#train-name').val(),
-            destination: $('#destination').val(),
-            frequency: $('#frequency').val(),
-            arrivalTime: $('#arrival-time').val(),            
-            minutesAway: minutesAway
+            trainName: trainName,
+            destination: destination,
+            arrivalTime: arrivalTime,   
+            frequency: frequency,         
+            minutesAway: minutesAway,
+            databaseKey: ""
         };
+
         console.log(scheduleInfo);
-    
+
         // Update the database with a new record
         var crap = database.ref().push(scheduleInfo);
-        console.log("crap=" + crap);
     
         // Reset the form
         $('#train-name').val('');
@@ -168,8 +207,11 @@ $(document).ready(function() {
         $('#arrival-time').val('');
         $('#frequency').val('');
 
+        // Hide train configuration area
+        $(".train-config-area").hide();
+
         // Show train schedule area
-        //$(".train-schedule-area").css("display", "block");
+        $(".train-schedule-area").show();
     });
 
     // Callback when the cancel button is clicked
@@ -178,11 +220,14 @@ $(document).ready(function() {
         // Don't refresh the page!
         event.preventDefault();
 
+        // Set header text
+        $(".config-message").text("");
+
         // Hide train configuration area
-        //$(".train-config-area").hide();
+        $(".train-config-area").hide();
 
         // Show train schedule area
-        //$(".train-schedule-area").show();
+        $(".train-schedule-area").show();
     });
 
     // Callback when the add train button is clicked
@@ -191,11 +236,13 @@ $(document).ready(function() {
         // Don't refresh the page!
         event.preventDefault();
 
+        $(".train-config-header").text("Add New Train")
+
         // Show train configuration area
         $(".train-config-area").css("display", "block");
 
         // Hide train schedule area
-        //$(".train-schedule-area").hide();
+        $(".train-schedule-area").hide();
     });
 
     // Callback when the refresh button is clicked
@@ -213,33 +260,36 @@ $(document).ready(function() {
             getMinutesAway(scheduleInfo);
         });
 
-        // Udate train schedules        
+        // Update train schedules
         $("#train-schedule").empty();
         trains.forEach(function(scheduleInfo) {
             console.log(scheduleInfo);            
             renderRecentSchedule(scheduleInfo);
-        });
+            database.ref(scheduleInfo.databaseKey).update(scheduleInfo);
+        });    
+    });
     
-        // Update the database with a new record
-        //database.ref().push(scheduleInfo);
+    // Callback when the edit train button is clicked
+    $(".edit-button").click(function(event) {
+
+        // Don't refresh the page!
+        event.preventDefault();
+
+        console.log("Edit button clicked.");        
+
+        // Set header text
+        $(".train-config-header").text("Edit Train");
+    });
+    
+    // Callback when the delete train button is clicked
+    $(".delete-button").click(function(event) {
+
+        // Don't refresh the page!
+        event.preventDefault();
+
+        console.log("Delete button clicked.");
+
     });
 
-    var arrivalTime = "00:00";
-    var currentTime = "21:30";
-    function test() {
-        console.log(arrivalTime);
-        console.log(currentTime);
-        
-        var momArrivalTime = moment(arrivalTime, "hh:mm");
-        var momCurrentTime = moment(currentTime, "hh:mm");
-        var duration = moment.duration(momArrivalTime.diff(momCurrentTime));       
-        var diffMinutes = Math.ceil(duration.asMinutes());
-        if (diffMinutes < 0)
-            diffMinutes = ~diffMinutes + 1;
-        console.log(diffMinutes);
-
-    };
-
-    test();
 });
     

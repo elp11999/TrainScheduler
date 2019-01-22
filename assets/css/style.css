@@ -3,7 +3,6 @@
  */
  body {
     font-family: 'Arial', 'Helvetica Neue', Helvetica, sans-serif;
-    /* background: url(../images/gravel.png); */
     margin: 0; 
 }
 
@@ -18,16 +17,13 @@
     display: inline-block;
 } 
 
-.train-schedule-areax,
-.train-config-areax {
-    display: none;
-}
-
 .card-header,
 .form-button
 .cancel-button,
 .add-train-button,
-.refresh-button {
+.refresh-button,
+.edit-button,
+.delete-button {
     background-color: #337ab7;
     color: #fff;
 }
@@ -46,17 +42,43 @@
     margin-right: 10px;
 }
 
-.form-button,
+.submit-button,
 .cancel-button,
 .add-train-button,
-.refresh-button {
+.refresh-button,
+.edit-button,
+.delete-button {
     margin-top: 10px;
     margin-left: 10px;
 }
+.submit-button,
+.cancel-button {
+    margin-bottom: 10px;
+}
 
-.form-button:hover,
+.submit-button:hover,
 .cancel-button:hover,
 .add-train-button:hover,
-.refresh-button:hover { 
+.refresh-button:hover,
+.edit-button.hover,
+.delete-button.hover { 
     background-color: #7f462c;
+}
+
+.config-message {
+    font-weight: bold;
+    font-size: 20px;
+    color: red;
+    margin-left: 10px;
+}
+
+.edit-dropdown,
+.delete-dropdown {
+    display: inline-block;
+}
+
+.train-config-area,
+.edit-dropdown,
+.delete-dropdown {
+    display: none;
 }
