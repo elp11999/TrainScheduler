@@ -16,10 +16,18 @@
 .main-header {
     margin-left: 10px;
     display: inline-block;
+} 
+
+.train-schedule-areax,
+.train-config-areax {
+    display: none;
 }
 
 .card-header,
-.form-button {
+.form-button
+.cancel-button,
+.add-train-button,
+.refresh-button {
     background-color: #337ab7;
     color: #fff;
 }
@@ -39,12 +47,16 @@
 }
 
 .form-button,
+.cancel-button,
+.add-train-button,
 .refresh-button {
     margin-top: 10px;
     margin-left: 10px;
 }
 
 .form-button:hover,
-.refresh-button:hover, { 
-    background-color: #7f462c
+.cancel-button:hover,
+.add-train-button:hover,
+.refresh-button:hover { 
+    background-color: #7f462c;
 }

@@ -36,71 +36,55 @@
                     </div>
                 </div>
             </div>
-    
-            <div class="card train-schedule-area">
-                <h5 class="card-header">Current Train Schedule</h5>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Train Name</th>
-                            <th scope="col">Destination</th>
-                            <th scope="col">Frequency (min)</th>
-                            <th scope="col">Next Arrival</th>
-                            <th scope="col">Minutes Away</th>
-                        </tr>
-                    </thead>
-                    <tbody id="train-schedule">
-                        <!--
-                        <tr>
-                            <td>Acela Express</td>
-                            <td>Dallas</td>
-                            <td>20</td>
-                            <td>01:00PM</td>
-                            <td>10</td>
-                        </tr>
-                        <tr>
-                            <td>Adirondack</td>
-                            <td>Atlanta</td>
-                            <td>40</td>
-                            <td>03:00PM</td>
-                            <td>20</td>
-                        </tr>
-                        <tr>
-                            <td>Amtrak Cascades</td>
-                            <td>Clear Water</td>
-                            <td>60</td>
-                            <td>05:00PM</td>
-                            <td>30</td>
-                        </tr>
-                        -->
-                    </tbody>
-                </table>
-            </div>
             
-            <button class="refresh-button btn btn-primary">Refresh</button>
+            <section class="train-schedule-area">
+                <div class="card">
+                    <h5 class="card-header">Current Train Schedule</h5>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Train Name</th>
+                                <th scope="col">Destination</th>
+                                <th scope="col">Frequency (min)</th>
+                                <th scope="col">Next Arrival</th>
+                                <th scope="col">Minutes Away</th>
+                            </tr>
+                        </thead>
+                        <tbody id="train-schedule">
+                        </tbody>
+                    </table>
+                </div>
+                
+                <button class="add-train-button btn btn-primary">Add Train</button>
+                <button class="refresh-button btn btn-primary">Refresh</button>
+            </section>
     
-            <div class="card train-config-area">
-                <h5 class="card-header">Add New Train</h5>
-                <form>
-                    <div class="form-group">
-                        <label class="form-label" for="train-name">Train Name</label>
-                        <input  id="train-name" type="input" class="form-control" id="train-name">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="train-destination">Destination</label>
-                        <input id="destination" type="input" class="form-control" id="train-destination">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="train-first-time">First Train Time (HH:mm military time)</label>
-                        <input id="arrival-time" type="input" class="form-control" id="train-first-time">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="train-frequency">Frequency (min)</label>
-                        <input id="frequency" type="input" class="form-control" id="train-frequency">
-                    </div>
-                    <button type="submit" class="form-button btn btn-primary">Submit</button>
-                </form>
-            </div>
+            <section class="train-config-area">
+                <div class="card">
+                    <h5 class="card-header">Add New Train</h5>
+                    <form>
+                        <div class="form-group">
+                            <label class="form-label" for="train-name">Train Name</label>
+                            <input  id="train-name" type="input" class="form-control" id="train-name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="train-destination">Destination</label>
+                            <input id="destination" type="input" class="form-control" id="train-destination">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="train-first-time">First Train Time (HH:mm military time)</label>
+                            <input id="arrival-time" type="input" class="form-control" id="train-first-time">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="train-frequency">Frequency (min)</label>
+                            <input id="frequency" type="input" class="form-control" id="train-frequency">
+                        </div>
+                        <button class="form-button btn btn-primary">Submit</button>
+                        <button class="cancel-button btn btn-primary">Cancel</button>
+                    </form>
+                </div>
+
+            </section>
         </div>
 
         <!--
