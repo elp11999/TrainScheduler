@@ -39,8 +39,8 @@ $(document).ready(function() {
         renderRecentSchedule(scheduleInfo);
 
         // Update drop down lists
-        updateDropDownList($(".edit-dropdown-menu"));
-        updateDropDownList($(".delete-dropdown-menu"));
+        updateDropDownList($(".edit-dropdown-menu"), "edit-train", editTrain);
+        updateDropDownList($(".delete-dropdown-menu"), "delete-train", deleteTrain);
 
         // Show train schedule area
         $(".train-schedule-area").css("display", "block");
@@ -67,7 +67,8 @@ $(document).ready(function() {
         var currentTime = moment();
         var nextArrivalTime = moment(intialArrivalTime, "hh:mm");
         var duration = moment.duration(nextArrivalTime.diff(currentTime));
-        minutesAway = Math.trunc(duration.asMinutes());
+        //minutesAway = Math.trunc(duration.asMinutes());        
+        minutesAway = Math.ceil(duration.asMinutes());
         console.log(">>minutesAway=" + minutesAway);
         if (minutesAway < 0) {
             var tmp = (~minutesAway) + 1;
@@ -90,6 +91,8 @@ $(document).ready(function() {
         console.log(">>>currentTime=" + currentTime.format("hh:mm a"));
         var nextArrivalTime = moment(schedule.arrivalTime, "hh:mm a");
         console.log(">>>nextArrivalTime=" + nextArrivalTime.format("hh:mm a"));
+
+        var currentDay = currentTime
         var duration = moment.duration(nextArrivalTime.diff(currentTime));
         var diffMinutes = Math.ceil(duration.asMinutes());
         console.log(">>>1 diffMinutes=" + diffMinutes);
@@ -138,13 +141,15 @@ $(document).ready(function() {
         console.log("nextArrivalTime=" + schedule.arrivalTime);
     }
 
-    function updateDropDownList(dropDownList) {
+    function updateDropDownList(dropDownList, cls, func) {
 
-        // Update drop downlist        
+        // Update drop downlist
+        console.log(dropDownList);       
         $(dropDownList).empty();
         trains.forEach(function(scheduleInfo) {            
-            $(dropDownList).append($("<a class=\"dropdown-item\" href=\"#\">" + scheduleInfo.trainName + "</a>"));
+            $(dropDownList).append($("<a class=\"" + cls + " dropdown-item\" href=\"#\">" + scheduleInfo.trainName + "</a>"));
         });
+        $("."+ cls).click(func);
 
     };
 
@@ -153,7 +158,8 @@ $(document).ready(function() {
         // Don't refresh the page!
         event.preventDefault();
 
-        console.log("Submit button clicked.");
+        var id = $(this).attr("id");
+        console.log("Submit button clicked. id=" + id);
 
         // Clear message area
         $(".config-message").text("");
@@ -186,20 +192,35 @@ $(document).ready(function() {
         // Create initial minutes away
         minutesAway = createInitialMinutesAway(arrivalTime);
 
-        // Build a new database record
-        var scheduleInfo = {
-            trainName: trainName,
-            destination: destination,
-            arrivalTime: arrivalTime,   
-            frequency: frequency,         
-            minutesAway: minutesAway,
-            databaseKey: ""
-        };
+        if (id === "add-new-train") {
+            // Build a new database record
+            var scheduleInfo = {
+                trainName: trainName,
+                destination: destination,
+                initialArrivalTime: arrivalTime, 
+                arrivalTime: arrivalTime,   
+                frequency: frequency,         
+                minutesAway: minutesAway,
+                databaseKey: ""
+            };
 
-        console.log(scheduleInfo);
+            console.log(scheduleInfo);
 
-        // Update the database with a new record
-        var crap = database.ref().push(scheduleInfo);
+            // Update the database with a new record
+            database.ref().push(scheduleInfo);
+        } else {
+            var scheduleInfo = null;
+            if ((scheduleInfo = findTrain(trainName)) !== null) {
+                scheduleInfo.destination = destination;
+                scheduleInfo.initialArrivalTime = arrivalTime;     
+                scheduleInfo.arrivalTime = arrivalTime;    
+                scheduleInfo.frequency = frequency;   
+                scheduleInfo.minutesAway = minutesAway;
+
+                // Update the database with a new changes
+                database.ref(scheduleInfo.databaseKey).update(scheduleInfo);
+            }
+        }
     
         // Reset the form
         $('#train-name').val('');
@@ -236,7 +257,9 @@ $(document).ready(function() {
         // Don't refresh the page!
         event.preventDefault();
 
-        $(".train-config-header").text("Add New Train")
+        $(".train-config-header").text("Add New Train");
+        
+        $(".submit-button").attr("id", "add-new-train");
 
         // Show train configuration area
         $(".train-config-area").css("display", "block");
@@ -268,28 +291,70 @@ $(document).ready(function() {
             database.ref(scheduleInfo.databaseKey).update(scheduleInfo);
         });    
     });
+
+    function findTrain(trainName) {
+        var info = null;
+        trains.forEach(function(scheduleInfo) {
+            if (scheduleInfo.trainName === trainName) {
+                info = scheduleInfo;
+                return;
+            }
+        });
+        return info;        
+    }
     
     // Callback when the edit train button is clicked
-    $(".edit-button").click(function(event) {
+    function editTrain(event) {
+        var scheduleInfo = null;
 
         // Don't refresh the page!
         event.preventDefault();
 
-        console.log("Edit button clicked.");        
+        var train = $(this).text();
+        console.log("Edit button clicked for " + train);
 
-        // Set header text
-        $(".train-config-header").text("Edit Train");
-    });
+        if ((scheduleInfo = findTrain(train)) !== null) {
+            // Set header text
+            $(".train-config-header").text("Edit Train");            
+ 
+            $(".submit-button").attr("id", "update-train");
+        
+            $('#train-name').val(scheduleInfo.trainName);
+            $('#destination').val(scheduleInfo.destination);
+            $('#arrival-time').val(scheduleInfo.initialArrivalTime);
+            $('#frequency').val(scheduleInfo.frequency);            
+
+            // Show train configuration area
+            $(".train-config-area").css("display", "block");
+    
+            // Hide train schedule area
+            $(".train-schedule-area").hide();
+
+        }
+    };
     
     // Callback when the delete train button is clicked
-    $(".delete-button").click(function(event) {
+    function deleteTrain(event) {
+        var scheduleInfo = null;
 
         // Don't refresh the page!
         event.preventDefault();
 
-        console.log("Delete button clicked.");
+        var train = $(this).text();
+        console.log("Delete button clicked for " + train);
+        
+        if ((scheduleInfo = findTrain(train)) !== null) {
+            // Update the database with a new changes
+            database.ref(scheduleInfo.databaseKey).remove()
+            .then(function() {
+              console.log("Remove succeeded.")
+            })
+            .catch(function(error) {
+              console.log("Remove failed: " + error.message)
+            });
+        }
 
-    });
+    };
 
 });
     
