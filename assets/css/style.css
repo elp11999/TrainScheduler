@@ -60,15 +60,15 @@
 .cancel-button:hover,
 .add-train-button:hover,
 .refresh-button:hover,
-.edit-button.hover,
-.delete-button.hover { 
+.edit-button:hover,
+.delete-button:hover { 
     background-color: #7f462c;
 }
 
 .config-message {
     font-weight: bold;
     font-size: 20px;
-    color: red;
+    color: #7f462c;
     margin-left: 10px;
 }
 

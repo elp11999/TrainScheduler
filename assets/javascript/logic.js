@@ -10,13 +10,13 @@ $(document).ready(function() {
 
     // Firebase database configuration<script>
     var config = {
-        apiKey: "AIzaSyDcuGueUU_g_2b8mEbCFweyPGOfHeHjOUA",
-        authDomain: "yodude-24585.firebaseapp.com",
-        databaseURL: "https://yodude-24585.firebaseio.com",
-        projectId: "yodude-24585",
-        storageBucket: "yodude-24585.appspot.com",
-        messagingSenderId: "395189365829"
-    };
+        apiKey: "AIzaSyCiJyxdol0a-YPE6RtsbvdQXqXiu264F6s",
+        authDomain: "train-d8458.firebaseapp.com",
+        databaseURL: "https://train-d8458.firebaseio.com",
+        projectId: "train-d8458",
+        storageBucket: "train-d8458.appspot.com",
+        messagingSenderId: "803846915221"
+      };
 
     // Initialize Firebase database
     firebase.initializeApp(config);
@@ -58,28 +58,10 @@ $(document).ready(function() {
         $(tr).append($("<td>" + scheduleInfo.trainName + "</td>"));
         $(tr).append($("<td>" + scheduleInfo.destination + "</td>"));
         $(tr).append($("<td>" + scheduleInfo.frequency + "</td>"));
-        $(tr).append($("<td>" + scheduleInfo.arrivalTime + "</td>"));
+        $(tr).append($("<td>" + scheduleInfo.arrivalDisplayTime + "</td>"));
         $(tr).append($("<td>" + scheduleInfo.minutesAway + "</td>"));
         $("#train-schedule").append(tr);
     };
-
-    function createInitialMinutesAway(intialArrivalTime) {
-        var minutesAway = 0;
-
-        var currentTime = moment();
-        var nextArrivalTime = moment(intialArrivalTime, "hh:mm");
-        var duration = moment.duration(nextArrivalTime.diff(currentTime));
-        //minutesAway = Math.trunc(duration.asMinutes());        
-        minutesAway = Math.ceil(duration.asMinutes());
-        console.log(">>minutesAway=" + minutesAway);
-        if (minutesAway < 0) {
-            var tmp = (~minutesAway) + 1;
-            console.log(">>tmp=" + tmp);
-            minutesAway = 1440 - tmp;
-        }
-        console.log(">>minutesAway=" + minutesAway);
-        return minutesAway;
-    }
 
     function getMinutesAway(schedule) {
         var diffMinutesminutesAway = 0;
@@ -89,48 +71,47 @@ $(document).ready(function() {
         
         // Get how many minutes until next arrival
         var currentTime = moment();
-        console.log(">>>currentTime=" + currentTime.format("hh:mm a"));
-        var nextArrivalTime = moment(schedule.arrivalTime, "hh:mm a");
-        console.log(">>>nextArrivalTime=" + nextArrivalTime.format("hh:mm a"));
+        console.log("currentTime=" + currentTime.format("MMMM Do YYYY, h:mm:ss a"));
+        var nextArrivalTime = moment(schedule.arrivalTime, 'MM-DD-YYYY hh:mm a');
+        console.log("nextArrivalTime=" + nextArrivalTime.format("MMMM Do YYYY, h:mm:ss a"));
 
-        var currentDay = currentTime
         var duration = moment.duration(nextArrivalTime.diff(currentTime));
         var diffMinutes = Math.ceil(duration.asMinutes());
-        console.log(">>>1 diffMinutes=" + diffMinutes);
+        //console.log(">>>1 diffMinutes=" + diffMinutes);
         if (diffMinutes < 0)  {     
-            diffMinutes = ~diffMinutes + 1;            
-            //diffMinutes = 1440 - diffMinutes;
-            console.log(">>>2 diffMinutes=" + diffMinutes);
+            diffMinutes = ~diffMinutes + 1;
+            //console.log(">>>2 diffMinutes=" + diffMinutes);
         }
+        if (diffMinutes > 1440)
+            diffMinutes = 1440 - diffMinutes;
 
-        //diffMinutes = createInitialMinutesAway(schedule.arrivalTime);
-        console.log(">>>diffMinutes=" + diffMinutes);
-        console.log(">>>frequency=" + frequency);
+        console.log("diffMinutes=" + diffMinutes);
+        console.log("frequency=" + frequency);
         
         // Update train schedule
          if (currentTime.isBefore(nextArrivalTime)) {
-            console.log("We are here 1");
+            //console.log("We are here 1");
             minutesAway = diffMinutes;
         } else if (diffMinutes == 0) {
-            console.log("We are here 2");
+            //console.log("We are here 2");
             minutesAway = frequency;
             nextArrivalTime = nextArrivalTime.add(frequency, 'minutes');  
         } else {
             var modulus = diffMinutes % frequency;
-            console.log("modulus=" + modulus);
+            //console.log("modulus=" + modulus);
             if (modulus === 0) {
                 console.log("We are here 3");
                 minutesAway = frequency;
                 nextArrivalTime = currentTime.add(frequency, 'minutes');
             } else {
                 if (diffMinutes > frequency) {
-                    console.log("We are here 4");
+                    //console.log("We are here 4");
                     var temp = diffMinutes + frequency;
                     var minutesToNewArrival = temp - (temp % frequency);
                     nextArrivalTime = nextArrivalTime.add(minutesToNewArrival, 'minutes');                    
                     minutesAway = frequency - modulus;
                 } else {
-                    console.log("We are here 5");                
+                    //console.log("We are here 5");                
                     minutesAway = modulus;                                   
                     minutesAway = frequency - diffMinutes;
                     nextArrivalTime = nextArrivalTime.add(frequency, 'minutes');                    
@@ -138,9 +119,11 @@ $(document).ready(function() {
             }
         }
         schedule.minutesAway = minutesAway;
-        schedule.arrivalTime = nextArrivalTime.format("hh:mm a").toUpperCase();
-        console.log("minutesAway=" + minutesAway);
-        console.log("nextArrivalTime=" + schedule.arrivalTime);
+        schedule.arrivalTime = nextArrivalTime.format("MM-DD-YYYY hh:mm:ss a");
+        schedule.arrivalDisplayTime = nextArrivalTime.format("hh:mm a").toUpperCase();
+        //console.log("minutesAway=" + minutesAway);
+        //console.log("nextArrivalTime=" + schedule.arrivalTime);
+        //console.log("arrivalDisplayTime=" + schedule.arrivalDisplayTime);
     }
 
     // Function to find a train schedule by it's name
@@ -240,13 +223,12 @@ $(document).ready(function() {
         var frequency = $('#frequency').val().trim();
         var minutesAway = 0;
 
-        // Verify all form data is present
+        // Verify all form data is present and valid
         if (trainName.length == 0) {
             $(".config-message").text("Error: Please enter a train name.")
             return;
         }
 
-        // Check for duplicate train name
         if (destination.length == 0) {
             $(".config-message").text("Error: Please enter a destination.")
             return;
@@ -270,8 +252,15 @@ $(document).ready(function() {
             return;
         }
 
-        // Create initial minutes away
-        minutesAway = createInitialMinutesAway(arrivalTime);
+         // Create arrival date and time 
+         var currentTime = moment();
+         var dateString = currentTime.format("MM-DD-YYYY") + " " + arrivalTime + " a"; 
+         var arrivalDate = moment(dateString, 'MM-DD-YYYY hh:mm a');
+         arrivalTime = arrivalDate.format("MM-DD-YYYY hh:mm:ss a"); 
+         console.log("arrivalTime=" + arrivalTime);
+         var initialArrivalTime = arrivalDate.format("hh:mm");
+         var arrivalDisplayTime = arrivalDate.format("hh:mm a").toUpperCase();
+         console.log("arrivalDisplayTime=" + arrivalDisplayTime);         
 
         if (id === "add-new-train") {
             // Check for duplicate train name            
@@ -284,8 +273,9 @@ $(document).ready(function() {
             scheduleInfo = {
                 trainName: trainName,
                 destination: destination,
-                initialArrivalTime: arrivalTime, 
-                arrivalTime: arrivalTime,   
+                initialArrivalTime: initialArrivalTime, 
+                arrivalTime: arrivalTime,
+                arrivalDisplayTime : arrivalDisplayTime,  
                 frequency: frequency,         
                 minutesAway: minutesAway,
                 databaseKey: ""
@@ -298,9 +288,9 @@ $(document).ready(function() {
         } else {
             if ((scheduleInfo = findTrainScheduleByName(trainName)) !== null) {
                 // Update train schedule information
-                scheduleInfo.destination = destination;
-                scheduleInfo.initialArrivalTime = arrivalTime;     
-                scheduleInfo.arrivalTime = arrivalTime;    
+                scheduleInfo.destination = destination;   
+                scheduleInfo.arrivalTime = arrivalTime;
+                scheduleInfo.arrivalDisplayTime = arrivalDisplayTime;    
                 scheduleInfo.frequency = frequency;   
                 scheduleInfo.minutesAway = minutesAway;                
 
